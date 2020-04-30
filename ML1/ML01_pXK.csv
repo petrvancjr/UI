@@ -1,0 +1,13 @@
+temp, state, rate
+below_37, healthy, 0.05
+below_37, cold, 0.03
+below_37, flu, 0.01
+37-38, healthy, 0.05
+37-38, cold, 0.15
+37-38, flu, 0.03
+38-39, healthy, 0.02
+38-39, cold, 0.25
+38-39, flu, 0.10
+over_39, healthy, 0.01
+over_39, cold, 0.10
+over_39, flu, 0.20

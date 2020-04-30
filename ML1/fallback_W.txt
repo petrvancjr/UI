@@ -1,0 +1,13 @@
+state, decision, cost
+healthy, no, 0 
+healthy, tea, 10
+healthy, drugs, 300
+healthy, spec, 300
+cold, no, 30  
+cold, tea, 0 
+cold, drugs, 200
+cold, spec, 200
+flu, no, 1000  
+flu, tea, 800 
+flu, drugs, 10
+flu, spec, 100
