@@ -1,13 +1,10 @@
+Official Peter's Playground, Welcome!
+* Trying improving algoritmus based on bool value of improvement
+
 #Dateset
 
 600 Mail, clear
 
-#Process of training
-
-Pipe
-1. CountVectorizer
-2. TfidfTransformer
-3. Classifier - MultinomialNB()
 
 https://www.kaggle.com/dilip990/spam-ham-detection-using-naive-bayes-classifier
 
@@ -18,3 +15,12 @@ Possible continuation:
   (I will assume the code is correctm as from what I seen)
   2. Edit code to classes
   3. Give it my dataset (input mails)
+
+
+Todo - dodelky:
+  1. train_filter only 2 arg.
+  2. upravit document params, opoopo
+
+
+Naplnit params a popsat parametry v dokumentu.
+Najit best solution.

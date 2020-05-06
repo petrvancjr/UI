@@ -8,6 +8,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.dummy import DummyClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import MultinomialNB
+from filter import process_data
 import numpy as np
 
 # you can do whatever you want with the these data
@@ -28,18 +30,27 @@ our_scorer = make_scorer(modified_accuracy, greater_is_better=True)
 
 
 def train_filter(X, y):
-    """Return a trained spam filter.
-    Please keep the same arguments: X, y (to be able to import this function for evaluation)
+    """
+    Naive Bayes train filter, best solution, with given parameters.
+    Return a trained spam filter.
     """
     assert 'X' in locals().keys()
     assert 'y' in locals().keys()
     assert len(locals().keys()) == 2
 
-    vec = CountVectorizer()
-    clf = DummyClassifier(strategy='most_frequent')
+    # Naive Bayes Classifier
+    vec = CountVectorizer(analyzer=process_data)
+    clf = MultinomialNB()
     pipe = Pipeline(steps=[
         ('vectorizer', vec),
-        ('classifier', clf)])
+        ('classifier', clf)
+        ])
+    pipe.set_params(
+    vectorizer__ngram_range=(1, 1),
+    vectorizer__max_df= 0.4,
+    vectorizer__min_df= 0,
+    classifier__alpha=0.01
+    )
     pipe.fit(X, y)
     return pipe
 
@@ -67,10 +78,10 @@ if __name__ == '__main__':
     y_test = data_tst.target
 
     # or you can make a custom train/test split (or CV)
-    # X = X_train.copy()
-    # X.extend(X_test)
-    # y = np.hstack((y_train, y_test))
-    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+    X = X_train.copy()
+    X.extend(X_test)
+    y = np.hstack((y_train, y_test))
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
     # Train the filter
     filter1 = train_filter(X_train, y_train)
