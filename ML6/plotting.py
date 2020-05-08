@@ -17,11 +17,13 @@ def plot_xy_data(x, y, c='b', xlbl='x', ylbl='y', s=20):
     _draw()
 
 
-def plot_xy_classified_data(x, y, c, xlbl='x', ylbl='y', colors=None):
+def plot_xy_classified_data(x, y, c, xlbl='x', ylbl='y', colors=None, margin=False):
     """Create plot of x,y pairs with classes c indicated by different colors."""
     if colors is None:
         colors = ['b', 'r', 'g', 'y', 'c', 'm']
     unique_classes = set(c)
+    if margin: # ZOOM OUT for better exposure
+        plt.margins(2, 2)
     for k in unique_classes:
         plt.scatter(x[c == k], y[c == k], c=colors[k], s=36)
     plt.xlabel(xlbl, fontsize=16)
@@ -61,7 +63,26 @@ def plot_2D_class_model(model, offset=0):
     vx = np.hstack((vx1, vx2))
     vyhat = model.predict(vx)
     myhat = np.reshape(vyhat, sh)
-    plt.contourf(mx1, mx2, myhat, lw=3, cmap=plt.cm.cool, alpha=0.3)
+    plt.contourf(mx1, mx2, myhat, cmap=plt.cm.cool, alpha=0.3)
+    _draw()
+
+
+def plot_2D_class_model_from_data(forward, w, offset=0):
+    """Plot the predictions and decision boundary of the model.
+
+    Assumes that a plot of data points already exists.
+    """
+    ax = plt.axis()
+    x1 = np.linspace(ax[0] - offset, ax[1] + offset, num=101)
+    x2 = np.linspace(ax[2] - offset, ax[3] + offset, num=101)
+    mx1, mx2 = np.meshgrid(x1, x2)
+    sh = mx1.shape
+    vx1 = np.reshape(mx1, (-1, 1))
+    vx2 = np.reshape(mx2, (-1, 1))
+    vx = np.hstack((vx1, vx2))
+    vyhat = forward(vx, w)
+    myhat = np.reshape(vyhat, sh)
+    plt.contourf(mx1, mx2, myhat, cmap=plt.cm.cool, alpha=0.3)
     _draw()
 
 
