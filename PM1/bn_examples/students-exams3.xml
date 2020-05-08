@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BIF VERSION="0.3"  xmlns="http://www.cs.ubc.ca/labs/lci/fopi/ve/XMLBIFv0_3"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.cs.ubc.ca/labs/lci/fopi/ve/XMLBIFv0_3 http://www.cs.ubc.ca/labs/lci/fopi/ve/XMLBIFv0_3/XMLBIFv0_3.xsd">
+<NETWORK>
+<NAME>Untitled</NAME>
+<PROPERTY>detailed = </PROPERTY>
+<PROPERTY>short = </PROPERTY>
+
+<VARIABLE TYPE="nature">
+	<NAME>Exam</NAME>
+	<OUTCOME>T</OUTCOME>
+	<OUTCOME>F</OUTCOME>
+	<OBS>F</OBS>
+	<PROPERTY>position = (7352.0, 5546.0)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Assessment</NAME>
+	<OUTCOME>T</OUTCOME>
+	<OUTCOME>F</OUTCOME>
+	<PROPERTY>position = (7439.0, 5460.0)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Assignments in time</NAME>
+	<OUTCOME>T</OUTCOME>
+	<OUTCOME>F</OUTCOME>
+	<PROPERTY>position = (7554.0, 5364.0)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Works hard</NAME>
+	<OUTCOME>T</OUTCOME>
+	<OUTCOME>F</OUTCOME>
+	<PROPERTY>position = (7468.0, 5260.0)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Assignments well-prepared</NAME>
+	<OUTCOME>T</OUTCOME>
+	<OUTCOME>F</OUTCOME>
+	<OBS>T</OBS>
+	<PROPERTY>position = (7627.0, 5260.0)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Understands theory</NAME>
+	<OUTCOME>T</OUTCOME>
+	<OUTCOME>F</OUTCOME>
+	<PROPERTY>position = (7184.0, 5456.0)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Motivated student</NAME>
+	<OUTCOME>T</OUTCOME>
+	<OUTCOME>F</OUTCOME>
+	<PROPERTY>position = (7424.0, 5130.0)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Attends lectures regularly</NAME>
+	<OUTCOME>T</OUTCOME>
+	<OUTCOME>F</OUTCOME>
+	<PROPERTY>position = (6966.0, 5219.0)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Gifted lecturer</NAME>
+	<OUTCOME>T</OUTCOME>
+	<OUTCOME>F</OUTCOME>
+	<OBS>T</OBS>
+	<PROPERTY>position = (7041.0, 5096.0)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Good study literature</NAME>
+	<OUTCOME>T</OUTCOME>
+	<OUTCOME>F</OUTCOME>
+	<OBS>T</OBS>
+	<PROPERTY>position = (7208.0, 5098.0)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Self-studied theory</NAME>
+	<OUTCOME>T</OUTCOME>
+	<OUTCOME>F</OUTCOME>
+	<PROPERTY>position = (7266.0, 5246.0)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Understands theory from lectures</NAME>
+	<OUTCOME>T</OUTCOME>
+	<OUTCOME>F</OUTCOME>
+	<PROPERTY>position = (7071.0, 5309.0)</PROPERTY>
+</VARIABLE>
+
+<DEFINITION>
+	<FOR>Exam</FOR>
+	<GIVEN>Assessment</GIVEN>
+	<GIVEN>Understands theory</GIVEN>
+	<TABLE>0.9 0.1 0.4 0.6 0.0 1.0 0.0 1.0</TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Assessment</FOR>
+	<GIVEN>Assignments in time</GIVEN>
+	<TABLE>0.9 0.1 0.6 0.4</TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Assignments in time</FOR>
+	<GIVEN>Works hard</GIVEN>
+	<GIVEN>Assignments well-prepared</GIVEN>
+	<TABLE>0.95 0.05 0.9 0.1 0.8 0.2 0.5 0.5</TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Works hard</FOR>
+	<GIVEN>Motivated student</GIVEN>
+	<TABLE>0.9 0.1 0.4 0.6</TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Assignments well-prepared</FOR>
+	<TABLE>0.8 0.2</TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Understands theory</FOR>
+	<GIVEN>Self-studied theory</GIVEN>
+	<GIVEN>Understands theory from lectures</GIVEN>
+	<TABLE>0.99 0.01 0.95 0.05 0.9 0.1 0.1 0.9</TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Motivated student</FOR>
+	<TABLE>0.6 0.4</TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Attends lectures regularly</FOR>
+	<GIVEN>Motivated student</GIVEN>
+	<GIVEN>Gifted lecturer</GIVEN>
+	<GIVEN>Good study literature</GIVEN>
+	<TABLE>0.9 0.1 0.95 0.05 0.05 0.95 0.7 0.3 0.6 0.4 0.7 0.3 0.1 0.9 0.4 0.6</TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Gifted lecturer</FOR>
+	<TABLE>0.5 0.5</TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Good study literature</FOR>
+	<TABLE>0.8 0.2</TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Self-studied theory</FOR>
+	<GIVEN>Motivated student</GIVEN>
+	<GIVEN>Good study literature</GIVEN>
+	<TABLE>0.9 0.1 0.5 0.5 0.4 0.6 0.2 0.8</TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Understands theory from lectures</FOR>
+	<GIVEN>Attends lectures regularly</GIVEN>
+	<GIVEN>Gifted lecturer</GIVEN>
+	<TABLE>0.9 0.1 0.5 0.5 0.5 0.5 0.3 0.7</TABLE>
+</DEFINITION>
+</NETWORK>
+</BIF>
