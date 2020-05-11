@@ -51,5 +51,5 @@ class WeatherHMM(HMM):
         return self.T[cur_state][next_state]
 
     def pe(self, state, obs):
-        """Return the probability of transition from current to next state"""
+        """Return the probability of the given observation when in current state"""
         return self.E[state][obs]

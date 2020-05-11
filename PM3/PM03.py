@@ -11,6 +11,8 @@ from itertools import product
 from hmm_inference import *
 from weather import WeatherHMM
 
+from collections import Counter
+
 
 def run_backward1():
     """Try a single step of backward algorithm"""
@@ -21,6 +23,7 @@ def run_backward1():
     print('Initial backward message:', b)
     print('Observation:', e)
     print('Updated backward message:', backward1(b, e, wtr))
+    print('Should be: ', Counter({'+rain': 0.42, '-rain': 0.18}))
 
 
 def run_fb():
@@ -33,7 +36,7 @@ def run_fb():
     f_seq = forward(prior, e_seq, wtr)          # Filtered beliefs
     s_seq = forwardbackward(prior, e_seq, wtr)  # Smoothed beliefs
     for t, (et, ft, st) in enumerate(zip(e_seq, f_seq, s_seq)):
-        print('Observation at time', t+1,':', et)
+        print('Observation at time', t+1, ':', et)
         print('Filtered:', ft)
         print('Smoothed:', st)
 
@@ -48,7 +51,10 @@ def run_viterbi1():
     print('Observation:', e)
     m, pred = viterbi1(m, e, wtr)
     print('Updated max message:', m)
+    print('Should be:', Counter(
+        {'+rain': 0.28350000000000003, '-rain': 0.027000000000000003}))
     print('Best predecessors', pred)
+    print('Should be: ', {'-rain': '+rain', '+rain': '+rain'})
 
 
 def run_viterbi():
@@ -64,8 +70,9 @@ def run_viterbi():
 
 
 if __name__ == '__main__':
-    print('Comment/uncomment individual run_* functions in the main section as needed.')
-    #run_backward1()
+    print('All functions are turned on.')
+
+    run_backward1()
     run_fb()
-    #run_viterbi1()
-    #run_viterbi()
+    run_viterbi1()
+    run_viterbi()

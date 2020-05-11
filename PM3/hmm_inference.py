@@ -7,6 +7,8 @@ BE3M33UI - Artificial Intelligence course, FEE CTU in Prague
 from collections import Counter
 from utils import normalized
 
+import numpy as np
+
 
 def update_belief_by_time_step(prev_B, hmm):
     """Update the distribution over states by 1 time step.
@@ -126,8 +128,12 @@ def backward1(next_b, next_e, hmm):
     :return: Counter, current backward message
     """
     cur_b = Counter()
-    # Your coude here
-    raise NotImplementedError('You must implement backward1()')
+
+    for X_ in hmm.get_states():
+        cur_b[X_] = 0.0  # Probably unnecessary
+        for x_ in hmm.get_states():
+            cur_b[X_] += hmm.pe(x_, next_e) * hmm.pt(X_, x_) * next_b[x_]
+
     return cur_b
 
 
@@ -140,9 +146,35 @@ def forwardbackward(priors, e_seq, hmm):
     :return: sequence of Counters, estimates of belief states for all time slices
     """
     se = []   # Smoothed belief distributions
-    # Your code here
-    raise NotImplementedError('You must implement forwardbackward()')
-    return se
+
+    t = len(e_seq)
+    f = []
+    fi = priors
+    f.append(priors)
+    for ei in e_seq:
+        fi = normalized(forward1(fi, ei, hmm))
+        f.append(fi)
+    #f = forward(priors, e_seq, hmm)
+    # note f dont have prior inside
+
+    b = Counter()
+    for X_ in hmm.get_states():
+        b[X_] = 1
+    for n in range(t, 0, -1):
+        #print("f[n]", f[n], "b", b)
+        si = normalized(CounterDictCross(f[n], b, hmm))
+        b = backward1(b, e_seq[n-1], hmm)
+
+        se.append(si)
+
+    return reversed(se)
+
+
+def CounterDictCross(f, b, hmm):
+    c = Counter()
+    for X_ in hmm.get_states():
+        c[X_] = (f[X_] * b[X_])
+    return c
 
 
 def viterbi1(prev_m, cur_e, hmm):
@@ -157,8 +189,27 @@ def viterbi1(prev_m, cur_e, hmm):
     """
     cur_m = Counter()   # Current (updated) max message
     predecessors = {}   # The best of previous states for each current state
-    # Your code here
-    raise NotImplementedError('You must implement viterbi1()')
+
+    # Nested function - only changing the sum to argmax or max?
+    def update_belief_by_time_step_max(prev_B, hmm):
+        cur_B = Counter()
+        predecessors = {}
+
+        X = hmm.get_states()  # Possible current states
+        for n, x_ in enumerate(hmm.get_states()):
+            for m, X_ in enumerate(X):
+                if cur_B[X_] < (hmm.pt(x_, X_) * prev_B[x_]):
+                    cur_B[X_] = hmm.pt(x_, X_) * prev_B[x_]
+                    predecessors[X_] = x_
+
+        return cur_B, predecessors
+
+    # Iterate over current and previous state
+    maxs, predecessors = update_belief_by_time_step_max(prev_m, hmm)
+    for X_ in hmm.get_states():
+
+        cur_m[X_] = hmm.pe(X_, cur_e) * maxs[X_]
+
     return cur_m, predecessors
 
 
@@ -172,6 +223,26 @@ def viterbi(priors, e_seq, hmm):
     """
     ml_seq = []  # Most likely sequence of states
     ms = []      # Sequence of max messages
-    # Your code here
-    raise NotImplementedError('You must implement viterbi()')
+    m = [priors]
+
+    for i, cur_e in enumerate(e_seq):
+
+        if i == 0:
+            m.append(forward1(m[i], cur_e, hmm))
+            # Init
+            X_ = {'+rain': '+rain'}
+            prev_e = X_['+rain']
+        else:
+            tmp, X_ = viterbi1(m[i], cur_e, hmm)
+            m.append(tmp)
+            prev_e = X_[prev_e]
+
+        ms.append(m[i+1])
+        ml_seq.append(X_[prev_e])
+
     return ml_seq, ms
+
+
+#
+#   Scroll
+#
