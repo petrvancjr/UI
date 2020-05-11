@@ -165,9 +165,9 @@ def forwardbackward(priors, e_seq, hmm):
         si = normalized(CounterDictCross(f[n], b, hmm))
         b = backward1(b, e_seq[n-1], hmm)
 
-        se.append(si)
+        se.insert(0, si)
 
-    return reversed(se)
+    return (se)
 
 
 def CounterDictCross(f, b, hmm):
@@ -224,7 +224,7 @@ def viterbi(priors, e_seq, hmm):
     ml_seq = []  # Most likely sequence of states
     ms = []      # Sequence of max messages
     m = [priors]
-
+    prev_e = None
     for i, cur_e in enumerate(e_seq):
 
         if i == 0:
