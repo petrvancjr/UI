@@ -16,8 +16,13 @@ def update_belief_by_time_step(prev_B, hmm):
     :return: Counter, current (updated) belief distribution over states
     """
     cur_B = Counter()
-    # Your code here
-    raise NotImplementedError('You must implement update_belief_by_time_step()')
+
+    X = hmm.get_states()  # Possible current states
+    for x_ in hmm.get_states():
+        for X_ in X:
+            # B(X) += P(X,x')*B(x')
+            cur_B[X_] += hmm.pt(x_, X_) * prev_B[x_]
+
     return cur_B
 
 
@@ -33,8 +38,11 @@ def predict(n_steps, prior, hmm):
     """
     B = prior  # This shall be iteratively updated
     Bs = []    # This shall be a collection of Bs over time steps
-    # Your code here
-    raise NotImplementedError('You must implement predict()')        
+
+    for i in range(n_steps):
+        cur_B = update_belief_by_time_step(B, hmm)
+        Bs.append(cur_B)
+        B = cur_B
     return Bs
 
 
@@ -48,8 +56,11 @@ def update_belief_by_evidence(prev_B, e, hmm):
     """
     # Create a new copy of the current belief state
     cur_B = Counter(prev_B)
-    # Your code here
-    raise NotImplementedError('You must implement update_belief_by_evidence()')
+
+    X = hmm.get_states()
+    for X_ in X:
+        cur_B[X_] = hmm.pe(X_, e) * prev_B[X_]
+
     return cur_B
 
 
@@ -61,8 +72,15 @@ def forward1(prev_f, cur_e, hmm):
     :param hmm: HMM, contains the transition and emission models
     :return: Counter, current belief distribution over states
     """
-    # Your code here
-    raise NotImplementedError('You must implement forward1()')
+    alpha = 1
+    #single only single update
+
+    cur_f = Counter()
+    upd = update_belief_by_time_step(prev_f, hmm)
+    for X_ in hmm.get_states():
+        #print("cur_e", cur_e, "prev_f[X_]", prev_f[X_])
+        cur_f[X_] = alpha * hmm.pe(X_, cur_e) * upd[X_]
+
     return cur_f
 
 
@@ -76,8 +94,12 @@ def forward(init_f, e_seq, hmm):
     """
     f = init_f    # Forward message, updated each iteration
     fs = []       # Sequence of forward messages, one for each time slice
-    # Your code here
-    raise NotImplementedError('You must implement forward()')
+
+    for e_kus in e_seq:
+
+        f = normalized(forward1(f, e_kus, hmm))
+        fs.append(f)
+
     return fs
 
 
@@ -91,5 +113,5 @@ def likelihood(prior, e_seq, hmm):
     :return: number, likelihood
     """
     # Your code here
-    raise NotImplementedError('You must implement likelihood()')    
+    raise NotImplementedError('You must implement likelihood()')
     return lhood

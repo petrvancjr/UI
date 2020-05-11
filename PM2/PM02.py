@@ -9,15 +9,42 @@ Contains functions executing various inference tasks
 from collections import Counter
 from weather import WeatherHMM
 from hmm_inference import *
+from utils import normalized
 
 # Initial distribution (can be changed)
 P0 = Counter({'+rain': 0.5, '-rain': 0.5})
+
+# State R
+R_domain = {'+rain', '-rain'}
+# Observation U
+U_domain = {'+umb', '-umb'}
+
+# Transition model
+default_T = {
+    '-rain':
+        {'-rain': 0.9,
+         '+rain': 0.1},
+    '+rain':
+        {'-rain': 0.3,
+         '+rain': 0.7}
+}
+
+# Sensor (emission) model
+default_E = {
+    '-rain':
+        {'+umb': 0.2,
+         '-umb': 0.8},
+    '+rain':
+        {'+umb': 0.9,
+         '-umb': 0.1}
+}
 
 
 def run_simulation(n_steps=10):
     """Simulate n_steps of WeatherHMM"""
     print('=== Simulation for {} steps'.format(n_steps))
-    wtr = WeatherHMM()
+    wtr = WeatherHMM(X_domain=R_domain, E_domain=U_domain,
+                     trans_model=default_T, emission_model=default_E)
     states, observations = wtr.simulate('+rain', n_steps)
     for state, obs in zip(states, observations):
         print(state, obs)
@@ -77,11 +104,45 @@ def run_likelihood():
     print('Likelihood of HMM2:', likelihood(prior, e_seq, wtr2))
 
 
+def update_belief_by_time_step_test():
+    wtr = WeatherHMM()
+    B = Counter({'+rain': 0.1, '-rain': 0.9})
+    Counter1 = update_belief_by_time_step(B, wtr)
+    Counter2 = Counter({'+rain': 0.16, '-rain': 0.84})
+    print("Counter1", Counter1)
+    print("Counter2", Counter2)
+    if (Counter1 == Counter2):
+        print("Correct score")
 
-if __name__=='__main__':
+
+def update_belief_by_evidence_test():
+    wtr = WeatherHMM()
+    B = Counter({'+rain': 0.5, '-rain': 0.5})
+    B_new = update_belief_by_evidence(B, '-umb', wtr)
+    print("Counter1", normalized(B_new))
+    print("Counter2", Counter(
+        {'+rain': 0.11111111111111112, '-rain': 0.888888888888889}))
+
+
+def forwart1_test():
+    wtr = WeatherHMM()
+    f = Counter({'+rain': 0.5, '-rain': 0.5})
+    f_new = forward1(f, '-umb', wtr)
+    print("f_new", f_new)
+    print("f_given", Counter({'+rain': 0.04, '-rain': 0.48}))
+    print("f_given norm", normalized(Counter({'+rain': 0.04, '-rain': 0.48})))
+
+
+if __name__ == '__main__':
     print('Comment/uncomment individual run_* functions in the main section as needed.')
-    #run_simulation()
-    #run_prediction()
-    #run_evidence_updates()
-    #run_filtering()
+
+    run_simulation()
+    run_prediction()
+    run_evidence_updates()
+    run_filtering()
     #run_likelihood()
+
+
+#
+#   scroll
+#
