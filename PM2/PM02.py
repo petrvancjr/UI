@@ -111,8 +111,7 @@ def update_belief_by_time_step_test():
     Counter2 = Counter({'+rain': 0.16, '-rain': 0.84})
     print("Counter1", Counter1)
     print("Counter2", Counter2)
-    if (Counter1 == Counter2):
-        print("Correct score")
+    print("Counter1 and Counter2 are the same when correct.")
 
 
 def update_belief_by_evidence_test():
@@ -122,6 +121,7 @@ def update_belief_by_evidence_test():
     print("Counter1", normalized(B_new))
     print("Counter2", Counter(
         {'+rain': 0.11111111111111112, '-rain': 0.888888888888889}))
+    print("Counter1 and Counter2 are the same when correct.")
 
 
 def forwart1_test():
@@ -129,12 +129,13 @@ def forwart1_test():
     f = Counter({'+rain': 0.5, '-rain': 0.5})
     f_new = forward1(f, '-umb', wtr)
     print("f_new", f_new)
-    print("f_given", Counter({'+rain': 0.04, '-rain': 0.48}))
-    print("f_given norm", normalized(Counter({'+rain': 0.04, '-rain': 0.48})))
+    print("f correct answer", Counter({'+rain': 0.04, '-rain': 0.48}))
+    print("f correct ans norm", normalized(
+        Counter({'+rain': 0.04, '-rain': 0.48})))
 
 
 if __name__ == '__main__':
-    print('Comment/uncomment individual run_* functions in the main section as needed.')
+    print('All functions are turned on.')
 
     run_simulation()
     run_prediction()
