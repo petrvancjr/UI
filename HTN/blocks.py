@@ -210,13 +210,12 @@ def put_block(state, x, y):
 def move_blocks(state, goal):
     blocks = all_blocks(state)
     # Make a stack
+    goalStack = []
     for block in blocks:
-        goalStack = []
         if goal.clear[block] == True:  # the top block
             while block != 'table':
                 goalStack.insert(0, block)
                 block = goal.pos[block]
-            break
 
     topBlocks = []
     for block in blocks:
