@@ -63,6 +63,7 @@ VERBOSE = 1
 print("Define the initial state1: a on b, b on table, c on table")
 state1 = pyhop.State('state1')
 state1.pos = {'a': 'b', 'b': 'table', 'c': 'table'}
+#state1.pos = {'a': 'b', 'b': 'table', 'c': 'a'}
 state1.clear = {'c': True, 'b': False, 'a': True}
 state1.holding = False
 pyhop.print_state(state1)
@@ -217,11 +218,25 @@ def move_blocks(state, goal):
                 block = goal.pos[block]
             break
 
+    topBlocks = []
+    for block in blocks:
+        if state.clear[block] == True:  # the top block
+            topBlocks.append(block)
+
     stackString = []
+    for kominek in topBlocks:
+        while state.pos[kominek] != 'table':
+            stackString.append(('move_one_block', kominek, 'table'))
+            kominek = state.pos[kominek]
+
     stackOn = 'table'  # Init -> lowest block goes onto table
-    for x in goalStack:
-        stackString.append(('move_one_block', x, stackOn))
-        stackOn = x
+    for n, x in enumerate(goalStack):
+        if n == 0:
+            stackOn = x
+        else:
+            stackString.append(('pickup', x))
+            stackString.append(('stack', x, stackOn))
+            stackOn = x
     return stackString
 
 
