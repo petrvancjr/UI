@@ -44,6 +44,8 @@ else:
 
 Set_C = set
 
+DEBUG = True
+
 """The blocks-world operators use three state variables:
 - pos[b] = block b's position, which may be 'table', 'hand', or another block.
 - clear[b] = False if a block is on b or the hand is holding b, else True.
@@ -119,16 +121,114 @@ def block_status(block_id, state, goal, done_state):
 Operators
 """
 
-# pyhop.declare_operators(pickup_o, unstack_o, putdown_o, stack_o)
+
+def pickup(state, x):  # I did not define, param o when calling
+    if state.pos[x] == 'table' and state.holding == False and state.clear[x] == True:
+        state.pos[x] = 'hand'
+        state.holding = True
+        state.clear[x] = False
+        return state
+    return False
+
+
+def putdown(state, x):  # I did not define, param p when calling
+    if state.pos[x] == 'hand' and state.holding == True:
+        state.pos[x] = 'table'
+        state.holding = False
+        state.clear[x] = True
+        return state
+    return False
+
+
+def stack(state, x, y):
+    if state.pos[x] == 'hand':
+        if state.holding == True:  # Check x
+            if state.clear[y] == True:  # Check y on top
+                state.pos[x] = y
+                state.clear[x] = True
+                state.clear[y] = False
+                state.holding = False
+                return state
+    return False
+
+
+def unstack(state, x, y):
+    if state.pos[x] == y and state.holding == False:  # Check x
+        if state.clear[x] == True:  # Check y on top
+            state.pos[x] = 'hand'
+            state.clear[x] = False
+            state.clear[y] = True
+            state.holding = True
+            return state
+    return False
+
+
+pyhop.declare_operators(pickup, unstack, putdown, stack)
+pyhop.print_operators()
 
 """
 Methods
 """
 
-# pyhop.declare_methods('move_one_block', move_one_block)
-# pyhop.declare_methods('get_block', get_block)  # either pickup or unstack
-# pyhop.declare_methods('put_block', put_block) # either putdown or stack
-# pyhop.declare_methods('move_blocks', move_blocks)
+
+def move_one_block(state, x, y):  # Moving x -> y
+    path = []
+    if state.clear[x] == False:  # Preconditions
+        return False
+    if get_block(state, x):  # 1. Pick up
+        path.append(get_block(state, x))
+    else:
+        return False
+    if put_block(state, x, y):  # 2. Put Down
+        path.append(put_block(state, x, y))
+    else:
+        return False
+    return path
+
+
+def get_block(state, x):
+    if state.pos[x] == 'table':
+        return ('pickup', x)
+    elif state.pos[x] == 'hand':
+        return False
+    else:  # position is on some block
+        y = state.pos[x]
+        return ('unstack', x, y)
+
+
+def put_block(state, x, y):
+    if y == 'table':
+        return ('putdown', x)
+    elif y == 'hand':
+        return False
+    else:  # Stack on something
+        state = stack(state, x, y)
+        return ('stack', x, y)
+
+
+def move_blocks(state, goal):
+    blocks = all_blocks(state)
+    # Make a stack
+    for block in blocks:
+        goalStack = []
+        if goal.clear[block] == True:  # the top block
+            while block != 'table':
+                goalStack.insert(0, block)
+                block = goal.pos[block]
+            break
+
+    stackString = []
+    stackOn = 'table'  # Init -> lowest block goes onto table
+    for x in goalStack:
+        stackString.append(('move_one_block', x, stackOn))
+        stackOn = x
+    return stackString
+
+
+pyhop.declare_methods('move_one_block', move_one_block)
+pyhop.declare_methods('get_block', get_block)  # either pickup or unstack
+pyhop.declare_methods('put_block', put_block)  # either putdown or stack
+pyhop.declare_methods('move_blocks', move_blocks)
 
 print('\n')
 pyhop.print_methods()
@@ -151,7 +251,6 @@ if __name__ == '__main__':
         plan(state1, [('unstack', 'a', 'b')], verbose=VERBOSE)
         plan(state1, [('pickup', 'c'), ('stack', 'c', 'a')], verbose=VERBOSE)
 
-
     def test_method():
         print('\n')
         plan(state1, [('move_one_block', 'c', 'a')], verbose=VERBOSE)
@@ -164,6 +263,6 @@ if __name__ == '__main__':
         for action in a_plan:
             print('action:', action)
 
-    # test_operators_methods()
-    # test_method()
+    test_operators_methods()
+    test_method()
     test_plan()
