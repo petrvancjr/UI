@@ -1,1 +1,1 @@
-# UI
+# Atrificial Intelligence course assignments
